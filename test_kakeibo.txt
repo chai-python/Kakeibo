@@ -1,4 +1,0 @@
-apple,400
-banana,300
-coffee,560
-a,200
