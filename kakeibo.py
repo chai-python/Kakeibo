@@ -1,14 +1,24 @@
+from datetime import date
 kakeibo=[]
 try:
     with open("kakeibo_jp.txt","r",encoding="utf-8")as f:
         lines=f.readlines()
     for line in lines:
         parts=line.strip().split(",")
-        record={
-            "item":parts[0],
-            "money":int(parts[1])
-        }
-        kakeibo.append(record)
+        if len(parts)==2:
+            record={
+                "date":"不明",
+                "item":parts[0],
+                "money":int(parts[1])
+            }
+            kakeibo.append(record)
+        elif len(parts)==3:
+            record={
+                "date":parts[0],
+                "item":parts[1],
+                "money":int(parts[2])
+            }
+            kakeibo.append(record)
 except FileNotFoundError:        
     print("初めての利用のため、データが見つかりません")
 def input_number(program):
@@ -21,9 +31,11 @@ def input_number(program):
             print("入力が正しくないようです。数字でもう一度入力してください。")
 def add_item(data):
     print("「追加」を選択しました")
+    today=date.today()
     item=input("今日は何を買ったの？：")
     money=input_number("価格：")
     record={
+        "date":today,
         "item":item,
         "money":money
     }
@@ -37,14 +49,11 @@ def show_items(data):
         print("まだデータがありません")
     else:
         for record in data:
-            record["item"]
-            record["money"]
-            print(record["item"],record["money"])
+            print(record["date"],record["item"],record["money"])
 def delete_item(data):
     print("「削除」を選択しました")
     delete_name=input("削除したい商品を入力してください：")
     for i,record in enumerate(data):
-        print(record)
         if record["item"]==delete_name:
             del data[i]
             print("商品を削除します")
@@ -83,10 +92,10 @@ while True:
         break
 with open("kakeibo_jp.txt","w",encoding="utf-8")as f:
     for record in kakeibo:
-        f.write(f'{record["item"]},{record["money"]}\n')
+        f.write(f'{record["date"]},{record["item"]},{record["money"]}\n')
 print("今日購入したもの:")
 for record in kakeibo:
-    print(record["item"],record["money"])
+    print(record["date"],record["item"],record["money"])
 print("合計:",get_total(kakeibo),"円")
 total=get_total(kakeibo)
 if total>budget:
