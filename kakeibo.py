@@ -68,6 +68,16 @@ def edit_item(data):
             print("商品を変更しました")
             return
     print("その商品は見つかりませんでした")
+def search_item(data):
+    print("「検索」を選択しました")
+    search_name=input("検索したい商品名を入力してください：")
+    found=False
+    for record in data:
+        if record["item"]==search_name:
+            print(record["date"],record["item"],record["money"])
+            found=True
+    if found==False:
+        print("その商品は見つかりませんでした")
 def show_menu():
     print("=======家計簿=======")
     print("1.追加")
@@ -75,6 +85,7 @@ def show_menu():
     print("3.表示")
     print("4.変更")
     print("5.終了")
+    print("6.検索")
     choice=input("番号を入力してください：")
     return choice
 budget=input_number("今日の予算を入力してください：")
@@ -88,6 +99,8 @@ while True:
         delete_item(kakeibo)
     elif choice=="4":
         edit_item(kakeibo)
+    elif choice=="6":
+        search_item(kakeibo)
     elif choice=="5":
         break
 with open("kakeibo_jp.txt","w",encoding="utf-8")as f:
