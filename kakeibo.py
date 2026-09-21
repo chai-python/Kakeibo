@@ -43,7 +43,7 @@ def add_item(data):
 def get_total(data):
     return sum(record["money"] for record in data)
 def show_items(data):
-    print("「表示」を選択しました")
+    print("「購入履歴」を選択しました")
     print("今日購入したもの:")
     if not data:
         print("まだデータがありません")
@@ -78,14 +78,25 @@ def search_item(data):
             found=True
     if found==False:
         print("その商品は見つかりませんでした")
+def show_statistics(data):
+    print("「今日の統計」を選択しました")
+    today=date.today()
+    total=0
+    count=0
+    for record in data:
+        if record["date"]==today:
+            total=total+record["money"]
+            count=count+1
+    return total,count
 def show_menu():
     print("=======家計簿=======")
     print("1.追加")
     print("2.削除")
-    print("3.表示")
+    print("3.購入履歴")
     print("4.変更")
     print("5.終了")
     print("6.検索")
+    print("7.今日の統計")
     choice=input("番号を入力してください：")
     return choice
 budget=input_number("今日の予算を入力してください：")
@@ -101,6 +112,10 @@ while True:
         edit_item(kakeibo)
     elif choice=="6":
         search_item(kakeibo)
+    elif choice=="7":
+        total,count=show_statistics(kakeibo)
+        print("今日の購入件数：", count, "件")
+        print("今日の支出合計：", total, "円")
     elif choice=="5":
         break
 with open("kakeibo_jp.txt","w",encoding="utf-8")as f:
