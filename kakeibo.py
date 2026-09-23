@@ -14,7 +14,7 @@ try:
             kakeibo.append(record)
         elif len(parts)==3:
             record={
-                "date":parts[0],
+                "date":date.fromisoformat(parts[0]),
                 "item":parts[1],
                 "money":int(parts[2])
             }
@@ -44,7 +44,7 @@ def get_total(data):
     return sum(record["money"] for record in data)
 def show_items(data):
     print("「購入履歴」を選択しました")
-    print("今日購入したもの:")
+    print("これまでの購入履歴:")
     if not data:
         print("まだデータがありません")
     else:
@@ -94,9 +94,9 @@ def show_menu():
     print("2.削除")
     print("3.購入履歴")
     print("4.変更")
-    print("5.終了")
-    print("6.検索")
-    print("7.今日の統計")
+    print("5.検索")
+    print("6.今日の統計")
+    print("7.終了")
     choice=input("番号を入力してください：")
     return choice
 budget=input_number("今日の予算を入力してください：")
@@ -110,22 +110,28 @@ while True:
         delete_item(kakeibo)
     elif choice=="4":
         edit_item(kakeibo)
-    elif choice=="6":
+    elif choice=="5":
         search_item(kakeibo)
-    elif choice=="7":
+    elif choice=="6":
         total,count=show_statistics(kakeibo)
         print("今日の購入件数：", count, "件")
         print("今日の支出合計：", total, "円")
-    elif choice=="5":
+    elif choice=="7":
         break
 with open("kakeibo_jp.txt","w",encoding="utf-8")as f:
     for record in kakeibo:
         f.write(f'{record["date"]},{record["item"]},{record["money"]}\n')
 print("今日購入したもの:")
+today=date.today()
 for record in kakeibo:
-    print(record["date"],record["item"],record["money"])
-print("合計:",get_total(kakeibo),"円")
-total=get_total(kakeibo)
+  if record["date"]==today:
+      print(record["date"],record["item"],record["money"])
+today=date.today()
+total=0
+for record in kakeibo:
+  if record["date"]==today:
+    total=total+record["money"]
+print("合計:",total,"円")
 if total>budget:
     print("予算オーバー")
 elif total<budget:
